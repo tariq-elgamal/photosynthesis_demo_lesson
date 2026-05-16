@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Photosynthesis — 15-Min Student-Centered Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
+<style>
+:root {
+  --g1: #0d3320;
+  --g2: #1a5c38;
+  --g3: #2e8b57;
+  --g4: #52c17a;
+  --g5: #a8eec1;
+  --g6: #e6f9ee;
+  --amber: #f59e0b;
+  --amber-light: #fef3c7;
+  --red: #ef4444;
+  --bg: #f0f4f2;
+  --card: #ffffff;
+  --text: #111c17;
+  --muted: #5a7065;
+  --border: rgba(0,0,0,0.08);
+  --r: 12px;
+  --r2: 20px;
+  --shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── STICKY TIMER BAR ── */
+.timer-bar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--g1);
+  padding: 10px 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.timer-label { color: rgba(255,255,255,0.55); font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; }
+.timer-digits {
+  font-family: 'DM Serif Display', serif;
+  font-size: 1.6rem;
+  color: #fff;
+  letter-spacing: 0.02em;
+  min-width: 80px;
+}
+.timer-digits.warn { color: var(--amber); }
+.timer-digits.danger { color: #ff6b6b; animation: pulse 1s infinite; }
+@keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.5} }
+.timer-track { flex: 1; background: rgba(255,255,255,0.12); border-radius: 4px; height: 5px; min-width: 80px; }
+.timer-fill { height: 5px; border-radius: 4px; background: var(--g4); transition: width 1s linear, background 1s; }
+.timer-controls { display: flex; gap: 8px; }
+.tbtn {
+  padding: 5px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.1);
+  color: #fff;
+  font-size: 12px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: background 0.2s;
+  display: flex; align-items: center; gap: 5px;
+}
+.tbtn:hover { background: rgba(255,255,255,0.2); }
+.phase-name { color: var(--g5); font-size: 12px; font-weight: 500; }
+
+/* ── LAYOUT ── */
+.page {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 2rem 1.25rem 6rem;
+}
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(135deg, var(--g1) 0%, var(--g2) 70%, #1d7340 100%);
+  border-radius: var(--r2);
+  padding: 2.25rem 2rem;
+  margin-bottom: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '🌿';
+  position: absolute;
+  right: 1.5rem; top: 50%;
+  transform: translateY(-50%);
+  font-size: 5rem;
+  opacity: 0.12;
+  pointer-events: none;
+}
+.hero-top { display: flex; align-items: flex-start; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.75rem; }
+.hero-badge {
+  background: rgba(255,255,255,0.14);
+  color: var(--g5);
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 4px 12px; border-radius: 20px;
+}
+.student-badge {
+  background: var(--amber);
+  color: #1a1000;
+  font-size: 11px; font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 4px 12px; border-radius: 20px;
+}
+.hero h1 {
+  font-family: 'DM Serif Display', serif;
+  font-size: 2.4rem;
+  color: #fff;
+  line-height: 1.15;
+  margin-bottom: 0.4rem;
+}
+.hero p { color: rgba(255,255,255,0.68); font-size: 14px; line-height: 1.65; }
+.hero-stats {
+  display: flex; gap: 1.5rem; flex-wrap: wrap;
+  margin-top: 1.1rem;
+}
+.hero-stats span {
+  color: rgba(255,255,255,0.6);
+  font-size: 13px;
+  display: flex; align-items: center; gap: 5px;
+}
+
+/* ── PHASE TIMELINE ── */
+.phase-nav {
+  display: flex;
+  gap: 0;
+  margin-bottom: 2rem;
+  background: var(--card);
+  border-radius: var(--r2);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+.pnav-item {
+  flex: 1;
+  padding: 0.8rem 0.5rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  border-right: 1px solid var(--border);
+  position: relative;
+}
+.pnav-item:last-child { border-right: none; }
+.pnav-item:hover { background: var(--g6); }
+.pnav-item.active { background: var(--g1); }
+.pnav-time {
+  font-size: 10px; font-weight: 600;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--muted);
+  margin-bottom: 3px;
+}
+.pnav-item.active .pnav-time { color: var(--g5); }
+.pnav-icon { font-size: 18px; margin-bottom: 3px; display: block; }
+.pnav-name { font-size: 12px; font-weight: 500; color: var(--text); }
+.pnav-item.active .pnav-name { color: #fff; }
+.pnav-item.done::after {
+  content: '✓';
+  position: absolute;
+  top: 4px; right: 6px;
+  font-size: 10px;
+  color: var(--g4);
+  font-weight: 700;
+}
+
+/* ── PHASE PANEL ── */
+.phase { display: none; }
+.phase.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none} }
+
+/* ── SECTION LABEL ── */
+.sec-label {
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-bottom: 1rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.sec-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+/* ── CARD ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 1.4rem 1.6rem;
+  margin-bottom: 1.1rem;
+  box-shadow: var(--shadow);
+}
+.card h3 {
+  font-size: 15px; font-weight: 600;
+  margin-bottom: 0.75rem;
+  display: flex; align-items: center; gap: 8px;
+}
+.card h3 i { color: var(--g3); font-size: 18px; }
+.card p { font-size: 14px; line-height: 1.75; color: var(--muted); }
+.card p strong { color: var(--text); }
+
+/* teacher note */
+.t-note {
+  background: var(--amber-light);
+  border-left: 3px solid var(--amber);
+  border-radius: 0 var(--r) var(--r) 0;
+  padding: 0.7rem 1rem;
+  font-size: 12px;
+  color: #78400a;
+  margin-bottom: 1rem;
+  display: flex; gap: 7px; align-items: flex-start;
+}
+.t-note i { flex-shrink: 0; margin-top: 1px; }
+
+/* ── THINK CARDS (wonder wall) ── */
+.wonder-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 10px;
+  margin-top: 0.75rem;
+}
+.wonder-card {
+  background: var(--g6);
+  border: 2px dashed var(--g4);
+  border-radius: var(--r);
+  padding: 1rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  min-height: 90px;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+}
+.wonder-card:hover { border-style: solid; border-color: var(--g3); background: var(--card); transform: translateY(-2px); }
+.wonder-card.flipped { border-style: solid; border-color: var(--g3); background: var(--card); }
+.wonder-front { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.wonder-back { display: none; font-size: 13px; color: var(--text); line-height: 1.5; }
+.wonder-card.flipped .wonder-front { display: none; }
+.wonder-card.flipped .wonder-back { display: block; }
+.wonder-emoji { font-size: 24px; }
+.wonder-q { font-size: 12px; color: var(--muted); }
+
+/* ── SORT ACTIVITY ── */
+.sort-area {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 0.75rem;
+}
+.sort-zone {
+  background: var(--g6);
+  border: 2px dashed var(--border);
+  border-radius: var(--r);
+  padding: 1rem;
+  min-height: 120px;
+  transition: border-color 0.2s, background 0.2s;
+}
+.sort-zone.dragover { border-color: var(--g3); background: #d4f5e4; }
+.sort-zone h4 {
+  font-size: 12px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.sort-zone.ingredients h4 { color: var(--g2); }
+.sort-zone.products h4 { color: #1e40af; }
+.sort-items-bank {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin: 0.75rem 0;
+}
+.sort-chip {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 13px;
+  cursor: grab;
+  user-select: none;
+  transition: all 0.2s;
+  box-shadow: var(--shadow);
+}
+.sort-chip:active { cursor: grabbing; opacity: 0.7; }
+.sort-chip:hover { border-color: var(--g3); }
+.sort-chip.placed-ing { background: var(--g6); border-color: var(--g3); cursor: default; }
+.sort-chip.placed-pro { background: #eff6ff; border-color: #3b82f6; cursor: default; }
+.sort-chip.wrong-place { background: #fef2f2; border-color: var(--red); animation: shake 0.3s; }
+@keyframes shake { 0%,100%{transform:translateX(0)}25%{transform:translateX(-5px)}75%{transform:translateX(5px)} }
+.sort-result {
+  font-size: 13px; color: var(--g2); font-weight: 500;
+  margin-top: 0.5rem; min-height: 20px;
+}
+
+/* ── EQUATION BUILDER ── */
+.eq-builder {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 8px; margin: 1rem 0;
+}
+.eq-slot {
+  background: var(--g6);
+  border: 2px dashed var(--g4);
+  border-radius: var(--r);
+  padding: 8px 14px;
+  min-width: 90px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  transition: all 0.2s;
+}
+.eq-slot.filled { border-style: solid; border-color: var(--g3); color: var(--g1); background: var(--card); }
+.eq-slot.wrong { border-color: var(--red); background: #fef2f2; color: var(--red); }
+.eq-arrow { font-size: 20px; color: var(--muted); }
+.eq-pieces {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-top: 0.5rem;
+}
+.eq-piece {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 7px 13px;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: var(--shadow);
+}
+.eq-piece:hover { border-color: var(--g3); background: var(--g6); }
+.eq-piece.used { opacity: 0.3; pointer-events: none; }
+
+/* ── SIMULATOR ── */
+.sim-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 0.75rem; }
+.sim-control {
+  background: var(--g6);
+  border-radius: var(--r);
+  padding: 0.9rem 1rem;
+}
+.sim-control label { font-size: 12px; font-weight: 600; color: var(--g2); display: flex; align-items: center; gap: 5px; margin-bottom: 8px; }
+.sim-control input[type=range] { width: 100%; accent-color: var(--g3); margin-bottom: 4px; }
+.sim-val-row { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+.sim-outputs {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 8px;
+  margin-top: 0.75rem;
+}
+.sim-out {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 0.75rem;
+  text-align: center;
+}
+.sim-out-val { font-size: 1.5rem; font-weight: 700; color: var(--g3); font-family: 'DM Serif Display', serif; }
+.sim-out-label { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.sim-insight {
+  background: var(--amber-light);
+  border-radius: var(--r);
+  padding: 0.75rem 1rem;
+  font-size: 13px; color: #78400a;
+  margin-top: 0.75rem;
+  min-height: 40px;
+}
+
+/* ── QUIZ ── */
+.quiz-q {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow);
+}
+.quiz-q-num {
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--g3); margin-bottom: 5px;
+}
+.quiz-q-text { font-size: 15px; font-weight: 500; margin-bottom: 0.9rem; }
+.quiz-opts { display: flex; flex-direction: column; gap: 8px; }
+.qopt {
+  padding: 10px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  background: var(--bg);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+}
+.qopt:hover:not([disabled]) { border-color: var(--g3); background: var(--g6); }
+.qopt.correct { background: #dcfce7; border-color: var(--g3); color: var(--g1); font-weight: 500; }
+.qopt.wrong { background: #fef2f2; border-color: var(--red); color: #7f1d1d; }
+.qfb { font-size: 13px; margin-top: 8px; padding: 8px 12px; border-radius: 8px; display: none; line-height: 1.55; }
+.qfb.show { display: block; }
+.cfb { background: #dcfce7; color: var(--g1); }
+.wfb { background: #fef2f2; color: #7f1d1d; }
+.score-card {
+  background: var(--g1);
+  border-radius: var(--r2);
+  padding: 2rem;
+  text-align: center;
+  color: #fff;
+  margin-bottom: 1rem;
+  display: none;
+}
+.score-num { font-family: 'DM Serif Display', serif; font-size: 3.5rem; line-height: 1; }
+.score-msg { font-size: 15px; opacity: 0.75; margin-top: 6px; }
+
+/* ── REFLECTION PAD ── */
+.reflect-pad {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  padding: 1.4rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--shadow);
+}
+.reflect-q {
+  font-size: 14px; font-weight: 500;
+  color: var(--text);
+  margin-bottom: 8px;
+  display: flex; align-items: flex-start; gap: 8px;
+}
+.reflect-q i { color: var(--g3); flex-shrink: 0; margin-top: 2px; }
+.reflect-input {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  padding: 10px 13px;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  resize: vertical;
+  min-height: 70px;
+  transition: border-color 0.2s;
+}
+.reflect-input:focus { outline: none; border-color: var(--g3); background: var(--card); }
+.submit-reflect {
+  margin-top: 8px;
+  padding: 8px 18px;
+  background: var(--g2);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.submit-reflect:hover { background: var(--g3); }
+.reflect-reply {
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: var(--g6);
+  border-left: 3px solid var(--g4);
+  border-radius: 0 8px 8px 0;
+  font-size: 13px; color: var(--g1);
+  display: none;
+}
+
+/* ── NAV BUTTONS ── */
+.nav-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.nav-btn {
+  padding: 10px 22px;
+  border-radius: var(--r);
+  border: none;
+  font-size: 14px; font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 7px;
+}
+.nav-btn.next { background: var(--g1); color: #fff; }
+.nav-btn.next:hover { background: var(--g2); }
+.nav-btn.back { background: var(--card); color: var(--text); border: 1px solid var(--border); }
+.nav-btn.back:hover { background: var(--g6); }
+
+/* ── PRINT BUTTON ── */
+.print-section {
+  background: var(--g1);
+  border-radius: var(--r2);
+  padding: 2rem;
+  text-align: center;
+  margin-top: 2rem;
+}
+.print-section h3 { font-family: 'DM Serif Display', serif; font-size: 1.5rem; color: #fff; margin-bottom: 0.5rem; }
+.print-section p { color: rgba(255,255,255,0.65); font-size: 14px; margin-bottom: 1.5rem; }
+.print-btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  padding: 13px 28px;
+  background: var(--amber);
+  color: #1a1000;
+  border: none;
+  border-radius: var(--r);
+  font-size: 15px; font-weight: 700;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.2);
+}
+.print-btn:hover { background: #fbbf24; transform: translateY(-1px); }
+.print-btn i { font-size: 18px; }
+
+/* ── LESSON PLAN (print only) ── */
+#lessonPlanPrint {
+  display: none;
+}
+
+@media print {
+  body > *:not(#lessonPlanPrint) { display: none !important; }
+  #lessonPlanPrint { display: block !important; }
+  @page { margin: 20mm; size: A4; }
+
+  .lp { font-family: 'DM Sans', sans-serif; color: #111; }
+  .lp-header { border-bottom: 3px solid #1a5c38; padding-bottom: 12px; margin-bottom: 16px; }
+  .lp-title { font-family: 'DM Serif Display', serif; font-size: 26px; color: #0d3320; margin-bottom: 4px; }
+  .lp-sub { font-size: 13px; color: #5a7065; }
+  .lp-meta { display: flex; gap: 24px; margin: 12px 0; flex-wrap: wrap; }
+  .lp-meta-item { font-size: 12px; color: #5a7065; }
+  .lp-meta-item strong { color: #111; }
+  .lp-section { margin-bottom: 18px; }
+  .lp-section-title {
+    font-size: 11px; font-weight: 700;
+    text-transform: uppercase; letter-spacing: 0.08em;
+    color: #1a5c38;
+    border-bottom: 1px solid #d1fae5;
+    padding-bottom: 4px; margin-bottom: 8px;
+  }
+  .lp-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .lp-table th {
+    background: #0d3320; color: #fff;
+    padding: 7px 10px; text-align: left; font-size: 11px;
+    text-transform: uppercase; letter-spacing: 0.05em;
+  }
+  .lp-table td { padding: 7px 10px; border-bottom: 1px solid #e5e7eb; vertical-align: top; }
+  .lp-table tr:nth-child(even) td { background: #f0fdf4; }
+  .lp-box {
+    border: 1px solid #d1fae5;
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+    font-size: 13px;
+    line-height: 1.6;
+  }
+  .lp-box-title { font-weight: 700; color: #0d3320; margin-bottom: 4px; font-size: 13px; }
+  .lp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+  .lp-tag {
+    display: inline-block;
+    background: #d1fae5; color: #0d3320;
+    border-radius: 4px; padding: 2px 8px;
+    font-size: 11px; font-weight: 600;
+    margin: 2px;
+  }
+  .lp-footer { margin-top: 20px; font-size: 11px; color: #aaa; text-align: center; border-top: 1px solid #e5e7eb; padding-top: 10px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════
+     STICKY TIMER BAR
+══════════════════════════════════════ -->
+<div class="timer-bar">
+  <div>
+    <div class="timer-label">Demo Lesson Timer</div>
+    <div class="timer-digits" id="timerDisplay">15:00</div>
+  </div>
+  <div class="timer-track">
+    <div class="timer-fill" id="timerFill" style="width:100%"></div>
+  </div>
+  <div class="phase-name" id="phaseName">Ready to start</div>
+  <div class="timer-controls">
+    <button class="tbtn" id="startBtn" onclick="startTimer()"><i class="ti ti-player-play"></i> Start</button>
+    <button class="tbtn" onclick="resetTimer()"><i class="ti ti-refresh"></i> Reset</button>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════
+     MAIN PAGE
+══════════════════════════════════════ -->
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-top">
+      <div class="hero-badge"><i class="ti ti-leaf"></i> Life Science · Grade 6–8</div>
+      <div class="student-badge">⚡ Student-Centered · Learning by Doing</div>
+    </div>
+    <h1>Photosynthesis</h1>
+    <p>A 15-minute demo lesson where <strong style="color:#fff">students discover everything</strong> — the teacher just facilitates.</p>
+    <div class="hero-stats">
+      <span><i class="ti ti-clock"></i> 15 minutes total</span>
+      <span><i class="ti ti-users"></i> Ages 11–13</span>
+      <span><i class="ti ti-chart-bar"></i> 90%+ student activity</span>
+      <span><i class="ti ti-brain"></i> Inquiry-based</span>
+    </div>
+  </div>
+
+  <!-- PHASE NAVIGATION -->
+  <div class="phase-nav" id="phaseNav">
+    <div class="pnav-item active" onclick="goPhase(0)" id="pnav-0">
+      <div class="pnav-time">0–3 min</div>
+      <span class="pnav-icon">🤔</span>
+      <div class="pnav-name">Wonder</div>
+    </div>
+    <div class="pnav-item" onclick="goPhase(1)" id="pnav-1">
+      <div class="pnav-time">3–7 min</div>
+      <span class="pnav-icon">🔬</span>
+      <div class="pnav-name">Discover</div>
+    </div>
+    <div class="pnav-item" onclick="goPhase(2)" id="pnav-2">
+      <div class="pnav-time">7–11 min</div>
+      <span class="pnav-icon">⚗️</span>
+      <div class="pnav-name">Experiment</div>
+    </div>
+    <div class="pnav-item" onclick="goPhase(3)" id="pnav-3">
+      <div class="pnav-time">11–13 min</div>
+      <span class="pnav-icon">✅</span>
+      <div class="pnav-name">Apply</div>
+    </div>
+    <div class="pnav-item" onclick="goPhase(4)" id="pnav-4">
+      <div class="pnav-time">13–15 min</div>
+      <span class="pnav-icon">💬</span>
+      <div class="pnav-name">Reflect</div>
+    </div>
+  </div>
+
+  <!-- ══ PHASE 0: WONDER ══ -->
+  <div class="phase active" id="phase-0">
+    <div class="sec-label">Phase 1 · Wonder &amp; Question (0–3 min)</div>
+
+    <div class="t-note">
+      <i class="ti ti-info-circle"></i>
+      <span><strong>Teacher (30 sec only):</strong> "You have 2 minutes. Look at these cards, flip each one, and discuss with your partner. Don't open any tabs — just think!"</span>
+    </div>
+
+    <div class="card">
+      <h3><i class="ti ti-question-mark"></i> What do YOU think plants need? Flip to check your guess!</h3>
+      <p style="margin-bottom:0.75rem; font-size:13px;">Tap each card, <strong>make your guess first</strong>, then flip to see if you're right.</p>
+      <div class="wonder-grid">
+        <div class="wonder-card" onclick="flipWonder(this)">
+          <div class="wonder-front"><span class="wonder-emoji">💧</span><div class="wonder-q">Do plants need this?</div><div style="font-size:12px;font-weight:600;color:#1a5c38;">Water</div></div>
+          <div class="wonder-back">✅ <strong>Yes!</strong> Plants absorb water through their roots. It's split apart during the reaction.</div>
+        </div>
+        <div class="wonder-card" onclick="flipWonder(this)">
+          <div class="wonder-front"><span class="wonder-emoji">🌬️</span><div class="wonder-q">Do plants need this?</div><div style="font-size:12px;font-weight:600;color:#1a5c38;">CO₂ from air</div></div>
+          <div class="wonder-back">✅ <strong>Yes!</strong> Plants "breathe in" carbon dioxide through tiny pores called stomata.</div>
+        </div>
+        <div class="wonder-card" onclick="flipWonder(this)">
+          <div class="wonder-front"><span class="wonder-emoji">☀️</span><div class="wonder-q">Do plants need this?</div><div style="font-size:12px;font-weight:600;color:#1a5c38;">Sunlight</div></div>
+          <div class="wonder-back">✅ <strong>Yes!</strong> Light is the energy source. Without it, the whole reaction stops.</div>
+        </div>
+        <div class="wonder-card" onclick="flipWonder(this)">
+          <div class="wonder-front"><span class="wonder-emoji">🌱</span><div class="wonder-q">Do plants need this?</div><div style="font-size:12px;font-weight:600;color:#1a5c38;">Soil nutrients</div></div>
+          <div class="wonder-back">⚠️ <strong>Mostly no!</strong> Soil holds plants up and provides minerals, but the food (glucose) is made from air + water + light — not soil.</div>
+        </div>
+        <div class="wonder-card" onclick="flipWonder(this)">
+          <div class="wonder-front"><span class="wonder-emoji">🍬</span><div class="wonder-q">Do plants need this?</div><div style="font-size:12px;font-weight:600;color:#1a5c38;">Sugar from soil</div></div>
+          <div class="wonder-back">❌ <strong>No!</strong> Plants manufacture their own sugar (glucose). They are the food producers — autotrophs!</div>
+        </div>
+        <div class="wonder-card" onclick="flipWonder(this)">
+          <div class="wonder-front"><span class="wonder-emoji">🌡️</span><div class="wonder-q">Does this affect plants?</div><div style="font-size:12px;font-weight:600;color:#1a5c38;">Temperature</div></div>
+          <div class="wonder-back">✅ <strong>Yes!</strong> Too hot or too cold slows the reaction. Sweet spot is ~25–35°C for most plants.</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><i class="ti ti-pencil"></i> Quick partner discussion</h3>
+      <p>Turn to your partner and answer: <strong>"If you put a plant in a completely dark room with plenty of water and CO₂ — what do you think happens? Why?"</strong></p>
+      <p style="margin-top:0.5rem; font-size:13px; color:var(--g2);">→ Discuss for 60 seconds, then move to Discover!</p>
+    </div>
+
+    <div class="nav-row">
+      <div></div>
+      <button class="nav-btn next" onclick="goPhase(1)">Next: Discover <i class="ti ti-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- ══ PHASE 1: DISCOVER ══ -->
+  <div class="phase" id="phase-1">
+    <div class="sec-label">Phase 2 · Discover by Doing (3–7 min)</div>
+
+    <div class="t-note">
+      <i class="ti ti-info-circle"></i>
+      <span><strong>Teacher (20 sec):</strong> "Two activities — first sort the words, then build the equation. You have 4 minutes. Go!"</span>
+    </div>
+
+    <div class="card">
+      <h3><i class="ti ti-arrows-sort"></i> Activity A — Sort it! Drag each word to the right column.</h3>
+      <div class="sort-items-bank" id="sortBank">
+        <div class="sort-chip" draggable="true" data-item="CO₂" data-type="ing" ondragstart="dragStart(event)" onclick="tapSort(this)">CO₂</div>
+        <div class="sort-chip" draggable="true" data-item="Glucose" data-type="pro" ondragstart="dragStart(event)" onclick="tapSort(this)">Glucose</div>
+        <div class="sort-chip" draggable="true" data-item="H₂O" data-type="ing" ondragstart="dragStart(event)" onclick="tapSort(this)">H₂O (water)</div>
+        <div class="sort-chip" draggable="true" data-item="Oxygen" data-type="pro" ondragstart="dragStart(event)" onclick="tapSort(this)">Oxygen (O₂)</div>
+        <div class="sort-chip" draggable="true" data-item="Light" data-type="ing" ondragstart="dragStart(event)" onclick="tapSort(this)">Light energy</div>
+      </div>
+      <div class="sort-area">
+        <div class="sort-zone ingredients" id="zone-ing" ondragover="allowDrop(event)" ondrop="dropSort(event,'ing')">
+          <h4><i class="ti ti-arrow-down-circle"></i> Ingredients (go IN)</h4>
+        </div>
+        <div class="sort-zone products" id="zone-pro" ondragover="allowDrop(event)" ondrop="dropSort(event,'pro')">
+          <h4 style="color:#1e40af;"><i class="ti ti-arrow-up-circle"></i> Products (come OUT)</h4>
+        </div>
+      </div>
+      <div class="sort-result" id="sortResult"></div>
+    </div>
+
+    <div class="card">
+      <h3><i class="ti ti-puzzle"></i> Activity B — Build the equation! Tap pieces in the right order.</h3>
+      <p style="font-size:13px;margin-bottom:0.75rem;">Tap the pieces below to fill the blanks. Build the photosynthesis equation left to right.</p>
+      <div class="eq-builder" id="eqBuilder">
+        <div class="eq-slot" id="slot-0" data-ans="6CO₂">?</div>
+        <span style="font-size:16px;color:var(--muted);">+</span>
+        <div class="eq-slot" id="slot-1" data-ans="6H₂O">?</div>
+        <span style="font-size:16px;color:var(--muted);">+</span>
+        <div class="eq-slot" id="slot-2" data-ans="Light">?</div>
+        <span class="eq-arrow">→</span>
+        <div class="eq-slot" id="slot-3" data-ans="Glucose">?</div>
+        <span style="font-size:16px;color:var(--muted);">+</span>
+        <div class="eq-slot" id="slot-4" data-ans="6O₂">?</div>
+      </div>
+      <div class="eq-pieces" id="eqPieces">
+        <div class="eq-piece" onclick="placePiece(this,'6H₂O')">6H₂O</div>
+        <div class="eq-piece" onclick="placePiece(this,'6O₂')">6O₂</div>
+        <div class="eq-piece" onclick="placePiece(this,'Glucose')">Glucose</div>
+        <div class="eq-piece" onclick="placePiece(this,'Light')">Light ☀️</div>
+        <div class="eq-piece" onclick="placePiece(this,'6CO₂')">6CO₂</div>
+        <div class="eq-piece" onclick="placePiece(this,'H₂O')">H₂O ✗</div>
+      </div>
+      <div id="eqResult" style="font-size:13px;margin-top:8px;min-height:20px;color:var(--g2);font-weight:500;"></div>
+      <button onclick="resetEq()" style="margin-top:8px;padding:5px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg);font-size:12px;cursor:pointer;font-family:'DM Sans',sans-serif;">↺ Reset equation</button>
+    </div>
+
+    <div class="nav-row">
+      <button class="nav-btn back" onclick="goPhase(0)"><i class="ti ti-arrow-left"></i> Back</button>
+      <button class="nav-btn next" onclick="goPhase(2)">Next: Experiment <i class="ti ti-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- ══ PHASE 2: EXPERIMENT ══ -->
+  <div class="phase" id="phase-2">
+    <div class="sec-label">Phase 3 · Virtual Experiment (7–11 min)</div>
+
+    <div class="t-note">
+      <i class="ti ti-info-circle"></i>
+      <span><strong>Teacher (15 sec):</strong> "You're a scientist now. Change one factor at a time. Find: which factor limits photosynthesis most in your plant? Write down your finding."</span>
+    </div>
+
+    <div class="card">
+      <h3><i class="ti ti-flask"></i> Your virtual plant — adjust one factor at a time &amp; observe</h3>
+      <p style="font-size:13px;margin-bottom:0.75rem;"><strong>Scientific method:</strong> Change only ONE slider at a time. Record what happens. Make a prediction before you move each slider!</p>
+      <div class="sim-grid">
+        <div class="sim-control">
+          <label><i class="ti ti-sun"></i> Light intensity</label>
+          <input type="range" min="0" max="100" value="60" id="sl" oninput="runSim()">
+          <div class="sim-val-row"><span>None</span><span id="vl">60%</span><span>Full</span></div>
+        </div>
+        <div class="sim-control">
+          <label><i class="ti ti-cloud"></i> CO₂ concentration</label>
+          <input type="range" min="0" max="100" value="50" id="sc" oninput="runSim()">
+          <div class="sim-val-row"><span>0%</span><span id="vc">50%</span><span>100%</span></div>
+        </div>
+        <div class="sim-control">
+          <label><i class="ti ti-droplet"></i> Water availability</label>
+          <input type="range" min="0" max="100" value="70" id="sw" oninput="runSim()">
+          <div class="sim-val-row"><span>Drought</span><span id="vw">70%</span><span>Flood</span></div>
+        </div>
+        <div class="sim-control">
+          <label><i class="ti ti-temperature"></i> Temperature</label>
+          <input type="range" min="0" max="50" value="25" id="st" oninput="runSim()">
+          <div class="sim-val-row"><span>0°C</span><span id="vt">25°C</span><span>50°C</span></div>
+        </div>
+      </div>
+      <div class="sim-outputs">
+        <div class="sim-out">
+          <div class="sim-out-val" id="og">42</div>
+          <div class="sim-out-label">mg glucose/hr</div>
+        </div>
+        <div class="sim-out">
+          <div class="sim-out-val" id="oo">38</div>
+          <div class="sim-out-label">ml O₂/hr released</div>
+        </div>
+        <div class="sim-out">
+          <div class="sim-out-val" style="font-size:1rem;color:var(--amber);font-family:'DM Sans',sans-serif;" id="olim">CO₂</div>
+          <div class="sim-out-label">Limiting factor</div>
+        </div>
+      </div>
+      <div class="sim-insight" id="simInsight">
+        🔬 Try setting light to 0% — what happens to glucose production?
+      </div>
+    </div>
+
+    <div class="card">
+      <h3><i class="ti ti-pencil"></i> My experimental finding</h3>
+      <p style="font-size:13px; margin-bottom:8px;">Complete this sentence in your notebook or type below:</p>
+      <textarea class="reflect-input" placeholder='e.g. "When I reduced light to 0%, glucose dropped to 0 mg/hr. This proves that light is essential because..."' style="min-height:80px;width:100%;"></textarea>
+    </div>
+
+    <div class="nav-row">
+      <button class="nav-btn back" onclick="goPhase(1)"><i class="ti ti-arrow-left"></i> Back</button>
+      <button class="nav-btn next" onclick="goPhase(3)">Next: Apply <i class="ti ti-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- ══ PHASE 3: APPLY ══ -->
+  <div class="phase" id="phase-3">
+    <div class="sec-label">Phase 4 · Apply Your Knowledge (11–13 min)</div>
+
+    <div class="t-note">
+      <i class="ti ti-info-circle"></i>
+      <span><strong>Teacher (10 sec):</strong> "Quick-fire quiz — do it alone, then compare with your partner. No peeking!"</span>
+    </div>
+
+    <div class="quiz-q" id="qq1">
+      <div class="quiz-q-num">Question 1 of 4</div>
+      <div class="quiz-q-text">A plant is placed in a room with water and CO₂ but zero light. What happens to photosynthesis?</div>
+      <div class="quiz-opts">
+        <button class="qopt" onclick="qa(this,'qq1',false,'Not quite — it does not continue. Light is the energy source that drives the entire reaction.')">It continues at a slower rate</button>
+        <button class="qopt" onclick="qa(this,'qq1',true,'Exactly! Without light there is no energy to drive the reaction, so glucose production stops completely.')">It stops completely — no light means no energy</button>
+        <button class="qopt" onclick="qa(this,'qq1',false,'Incorrect — the plant cannot substitute CO₂ for light. These are different ingredients.')">It uses more CO₂ to compensate</button>
+      </div>
+      <div class="qfb" id="qf1"></div>
+    </div>
+
+    <div class="quiz-q" id="qq2">
+      <div class="quiz-q-num">Question 2 of 4</div>
+      <div class="quiz-q-text">Why is photosynthesis important for animals that never eat plants — like lions?</div>
+      <div class="quiz-opts">
+        <button class="qopt" onclick="qa(this,'qq2',false,'Oxygen is important, but the energy chain is the bigger reason — every animal depends on plant-stored energy.')">Lions breathe the oxygen plants release</button>
+        <button class="qopt" onclick="qa(this,'qq2',true,'Spot on! Zebras eat grass (plants). Lions eat zebras. All that energy originally came from the sun via photosynthesis.')">Plants are the base of the food chain — zebras eat plants, lions eat zebras</button>
+        <button class="qopt" onclick="qa(this,'qq2',false,'Plants do regulate temperature (shade, moisture), but this is not why photosynthesis is critical to lions.')">Plants keep the climate cool for lions</button>
+      </div>
+      <div class="qfb" id="qf2"></div>
+    </div>
+
+    <div class="quiz-q" id="qq3">
+      <div class="quiz-q-num">Question 3 of 4</div>
+      <div class="quiz-q-text">Which part of the plant cell actually carries out photosynthesis?</div>
+      <div class="quiz-opts">
+        <button class="qopt" onclick="qa(this,'qq3',false,'The nucleus controls the cell but is not where photosynthesis reactions take place.')">The nucleus</button>
+        <button class="qopt" onclick="qa(this,'qq3',false,'The mitochondria performs respiration (the reverse process), not photosynthesis.')">The mitochondria</button>
+        <button class="qopt" onclick="qa(this,'qq3',true,'Correct! Chloroplasts contain chlorophyll — the green pigment that captures light and powers the reaction.')">The chloroplast</button>
+      </div>
+      <div class="qfb" id="qf3"></div>
+    </div>
+
+    <div class="quiz-q" id="qq4">
+      <div class="quiz-q-num">Question 4 of 4</div>
+      <div class="quiz-q-text">Farmers sometimes pump extra CO₂ into greenhouses. Based on your experiment, why?</div>
+      <div class="quiz-opts">
+        <button class="qopt" onclick="qa(this,'qq4',false,'CO₂ does not keep pests away — this is not related to photosynthesis.')">To keep pests away from plants</button>
+        <button class="qopt" onclick="qa(this,'qq4',false,'CO₂ is a raw ingredient, not a fertilizer — and plants absorb it from air, not soil.')">To fertilize the soil</button>
+        <button class="qopt" onclick="qa(this,'qq4',true,'Brilliant! More CO₂ removes a limiting factor, allowing plants to photosynthesize faster and grow more.')">To increase the rate of photosynthesis and boost plant growth</button>
+      </div>
+      <div class="qfb" id="qf4"></div>
+    </div>
+
+    <div class="score-card" id="scoreCard">
+      <div class="score-num" id="scoreNum">0/4</div>
+      <div class="score-msg" id="scoreMsg"></div>
+    </div>
+
+    <div class="nav-row">
+      <button class="nav-btn back" onclick="goPhase(2)"><i class="ti ti-arrow-left"></i> Back</button>
+      <button class="nav-btn next" onclick="goPhase(4)">Next: Reflect <i class="ti ti-arrow-right"></i></button>
+    </div>
+  </div>
+
+  <!-- ══ PHASE 4: REFLECT ══ -->
+  <div class="phase" id="phase-4">
+    <div class="sec-label">Phase 5 · Reflect &amp; Connect (13–15 min)</div>
+
+    <div class="t-note">
+      <i class="ti ti-info-circle"></i>
+      <span><strong>Teacher (15 sec):</strong> "Last two minutes — your exit ticket. Answer just one of these questions in your own words. Be ready to share."</span>
+    </div>
+
+    <div class="reflect-pad">
+      <div class="reflect-q"><i class="ti ti-number-1"></i> In one sentence, explain photosynthesis as if you're talking to a 7-year-old.</div>
+      <textarea class="reflect-input" id="r1" placeholder="e.g. Plants are like little kitchens that use sunlight to cook their food from air and water..."></textarea>
+      <button class="submit-reflect" onclick="checkReflect('r1','reply1')">Check my answer <i class="ti ti-send"></i></button>
+      <div class="reflect-reply" id="reply1">🌟 Great thinking! A plant is indeed a solar-powered sugar factory. Key words to include: sunlight, water, CO₂, glucose, and oxygen.</div>
+    </div>
+
+    <div class="reflect-pad">
+      <div class="reflect-q"><i class="ti ti-number-2"></i> Deforestation (cutting forests) is linked to climate change. Using what you learned today — explain why.</div>
+      <textarea class="reflect-input" id="r2" placeholder="Forests absorb CO₂ through photosynthesis..."></textarea>
+      <button class="submit-reflect" onclick="checkReflect('r2','reply2')">Check my answer <i class="ti ti-send"></i></button>
+      <div class="reflect-reply" id="reply2">🌍 Excellent connection! Fewer trees = less photosynthesis = less CO₂ absorbed = more greenhouse gases = warmer planet. You just connected biology to climate science!</div>
+    </div>
+
+    <div class="reflect-pad">
+      <div class="reflect-q"><i class="ti ti-number-3"></i> What is one thing you discovered today that surprised you?</div>
+      <textarea class="reflect-input" id="r3" placeholder="I was surprised that..."></textarea>
+      <button class="submit-reflect" onclick="checkReflect('r3','reply3')">Submit <i class="ti ti-send"></i></button>
+      <div class="reflect-reply" id="reply3">💡 Curiosity is the best start to science! Bring that question to our next lesson on cellular respiration — the reverse of what you learned today.</div>
+    </div>
+
+    <div class="card" style="background:var(--g6); border-color:var(--g4);">
+      <h3><i class="ti ti-rocket"></i> Coming up next</h3>
+      <p>Next lesson: <strong>Cellular Respiration</strong> — the reverse reaction where plants (and you!) release the energy stored in glucose. Photosynthesis and respiration are two halves of the same loop that keeps all life on Earth going.</p>
+    </div>
+
+    <div class="nav-row">
+      <button class="nav-btn back" onclick="goPhase(3)"><i class="ti ti-arrow-left"></i> Back</button>
+      <div></div>
+    </div>
+  </div>
+
+  <!-- ══ PRINT SECTION ══ -->
+  <div class="print-section">
+    <h3>📄 Lesson Plan PDF</h3>
+    <p>Print or save the full teacher lesson plan — includes timing, objectives, activities, differentiation strategies, and assessment notes.</p>
+    <button class="print-btn" onclick="printLesson()">
+      <i class="ti ti-printer"></i> Print / Save as PDF
+    </button>
+  </div>
+
+</div><!-- end .page -->
+
+<!-- ══════════════════════════════════════
+     LESSON PLAN (PRINT ONLY)
+══════════════════════════════════════ -->
+<div id="lessonPlanPrint">
+<div class="lp">
+  <div class="lp-header">
+    <div class="lp-title">Lesson Plan: Photosynthesis</div>
+    <div class="lp-sub">Student-Centered Demo Lesson · Life Science · Grade 6–8 · 15 Minutes</div>
+  </div>
+
+  <div class="lp-meta">
+    <div class="lp-meta-item"><strong>Subject:</strong> Life Science / Biology</div>
+    <div class="lp-meta-item"><strong>Grade:</strong> 6–8 (Ages 11–13)</div>
+    <div class="lp-meta-item"><strong>Duration:</strong> 15 minutes</div>
+    <div class="lp-meta-item"><strong>Approach:</strong> Inquiry-Based, Student-Centered</div>
+    <div class="lp-meta-item"><strong>Teacher talk time:</strong> &lt; 90 seconds total</div>
+    <div class="lp-meta-item"><strong>Student activity time:</strong> ~13.5 minutes (90%+)</div>
+  </div>
+
+  <div class="lp-section">
+    <div class="lp-section-title">Learning Objectives</div>
+    <div class="lp-box">
+      By the end of this lesson, students will be able to:<br>
+      1. Identify the three ingredients and two products of photosynthesis through a sorting activity.<br>
+      2. Construct the photosynthesis equation by placing components in the correct order.<br>
+      3. Predict and explain how changing one variable (light, CO2, water, temperature) affects the rate of photosynthesis.<br>
+      4. Connect photosynthesis to real-world issues (food chains, climate change).<br>
+      <br>
+      <strong>Curriculum alignment:</strong> NGSS MS-LS1-6 · Construct a scientific explanation based on evidence for the role of photosynthesis in the cycling of matter and flow of energy into and out of organisms.
+    </div>
+  </div>
+
+  <div class="lp-section">
+    <div class="lp-section-title">Lesson Structure — 5 Phases</div>
+    <table class="lp-table">
+      <tr>
+        <th>Phase</th><th>Time</th><th>Student Activity</th><th>Teacher Role</th><th>Pedagogy</th>
+      </tr>
+      <tr>
+        <td><strong>1. Wonder</strong></td>
+        <td>0–3 min</td>
+        <td>Flip "ingredient cards" to test guesses. Partner discussion: "What happens if you remove light?"</td>
+        <td>Pose one big question. Circulate. Listen. Do NOT explain yet.</td>
+        <td>Activate prior knowledge, curiosity hook</td>
+      </tr>
+      <tr>
+        <td><strong>2. Discover</strong></td>
+        <td>3–7 min</td>
+        <td>Sort ingredients vs. products (drag &amp; drop). Build the equation by selecting pieces in order.</td>
+        <td>One prompt only: "Sort, then build." Walk around, ask "Why did you place that there?"</td>
+        <td>Inquiry, hands-on construction, peer learning</td>
+      </tr>
+      <tr>
+        <td><strong>3. Experiment</strong></td>
+        <td>7–11 min</td>
+        <td>Use virtual simulator — change ONE factor at a time, record findings, identify the limiting factor.</td>
+        <td>Ask probing questions: "What happens at 0 light? What did you predict?"</td>
+        <td>Scientific method, variable control, data literacy</td>
+      </tr>
+      <tr>
+        <td><strong>4. Apply</strong></td>
+        <td>11–13 min</td>
+        <td>4-question quiz — answer alone, then compare with partner.</td>
+        <td>Say: "No peeking — try alone first." After, facilitate brief pair discussion.</td>
+        <td>Formative assessment, peer explanation</td>
+      </tr>
+      <tr>
+        <td><strong>5. Reflect</strong></td>
+        <td>13–15 min</td>
+        <td>Exit ticket: explain photosynthesis in own words or connect to climate change.</td>
+        <td>Cold-call 2–3 students to share. Affirm and bridge to next lesson.</td>
+        <td>Metacognition, real-world connection, transfer</td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="lp-section">
+    <div class="lp-section-title">Key Vocabulary</div>
+    <div class="lp-grid">
+      <div class="lp-box">
+        <div class="lp-box-title">Core Terms</div>
+        <span class="lp-tag">Photosynthesis</span>
+        <span class="lp-tag">Chlorophyll</span>
+        <span class="lp-tag">Chloroplast</span>
+        <span class="lp-tag">Glucose</span>
+        <span class="lp-tag">Stomata</span>
+        <span class="lp-tag">Autotroph</span>
+        <span class="lp-tag">Limiting factor</span>
+      </div>
+      <div class="lp-box">
+        <div class="lp-box-title">The Equation (students build this)</div>
+        6CO2 + 6H2O + Light energy → C6H12O6 + 6O2<br>
+        <span style="font-size:12px;color:#5a7065;">Carbon dioxide + Water + Light → Glucose + Oxygen</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="lp-section">
+    <div class="lp-section-title">Differentiation Strategies</div>
+    <div class="lp-grid">
+      <div class="lp-box">
+        <div class="lp-box-title">Support (Lower readiness)</div>
+        - Wonder cards provide immediate feedback after flip<br>
+        - Sort activity uses color coding (green = in, blue = out)<br>
+        - Equation builder has wrong options clearly labeled<br>
+        - Sentence starters provided for reflection<br>
+        - Allow pair work throughout
+      </div>
+      <div class="lp-box">
+        <div class="lp-box-title">Extension (Higher readiness)</div>
+        - Explain why CO2 + water make glucose at the molecular level<br>
+        - Research: how does shade adaptation work in plants?<br>
+        - Connect to: why does ocean algae produce 50% of Earth's O2?<br>
+        - Challenge: design an experiment to test a plant's light tolerance
+      </div>
+    </div>
+  </div>
+
+  <div class="lp-section">
+    <div class="lp-section-title">Assessment</div>
+    <div class="lp-box">
+      <div class="lp-box-title">Formative (During lesson)</div>
+      - Sort activity: observe who places products vs ingredients correctly<br>
+      - Equation builder: check completion — who needed to reset?<br>
+      - Simulator: listen for "limiting factor" language in student discussion<br>
+      - Quiz: 4 questions with instant feedback — aim for 3+/4 class average<br>
+      - Exit ticket: collect written reflections for review
+    </div>
+    <div class="lp-box">
+      <div class="lp-box-title">Success Criteria (Students can...)</div>
+      ✓ Name 3 ingredients and 2 products of photosynthesis<br>
+      ✓ Write or recall the chemical equation<br>
+      ✓ Explain what a limiting factor is with one example<br>
+      ✓ Connect photosynthesis to at least one real-world issue
+    </div>
+  </div>
+
+  <div class="lp-section">
+    <div class="lp-section-title">Student-Centered Design Principles Applied</div>
+    <div class="lp-box">
+      <strong>1. Minimal teacher talk:</strong> Total teacher speaking time &lt; 90 seconds. Each phase opens with one sentence of instruction maximum.<br>
+      <strong>2. Learning by doing:</strong> Every concept is discovered through an activity — flip cards, drag &amp; drop, build equations, run experiments, answer quizzes — before it is ever stated.<br>
+      <strong>3. Immediate feedback:</strong> All activities provide instant, explanatory feedback so students self-correct without waiting for the teacher.<br>
+      <strong>4. Social learning:</strong> Partner discussion built into Phases 1, 4, and 5. Peer comparison after quiz encourages explanation and solidifies understanding.<br>
+      <strong>5. Real-world transfer:</strong> Every activity connects to a genuine application — food chains, greenhouse farming, climate change — to answer "why does this matter?"
+    </div>
+  </div>
+
+  <div class="lp-section">
+    <div class="lp-section-title">Materials &amp; Setup</div>
+    <div class="lp-box">
+      - Device per student (or 1 per pair) with this webpage open<br>
+      - Optional: whiteboard for students to draw their findings<br>
+      - Notebooks / paper for written reflections<br>
+      - Timer running on main screen (built into this page)<br>
+      - No printed materials required — fully digital<br>
+      <br>
+      <strong>Room setup:</strong> Pairs preferred. Groups of 3 acceptable. No rows — discussion is key.
+    </div>
+  </div>
+
+  <div class="lp-footer">
+    Photosynthesis Demo Lesson · Middle School Science · Student-Centered · 15 Minutes · Prepared for teaching interview demonstration
+  </div>
+</div>
+</div><!-- end lessonPlanPrint -->
+
+
+<script>
+// ════════════════════════════════
+// TIMER
+// ════════════════════════════════
+const TOTAL = 15 * 60;
+let remaining = TOTAL;
+let running = false;
+let timerInterval = null;
+
+const phaseNames = ['Wonder & Question','Discover by Doing','Virtual Experiment','Apply Knowledge','Reflect & Connect'];
+const phaseStarts = [0, 3*60, 7*60, 11*60, 13*60];
+
+function startTimer() {
+  if (running) return;
+  running = true;
+  document.getElementById('startBtn').innerHTML = '<i class="ti ti-player-pause"></i> Running';
+  timerInterval = setInterval(() => {
+    remaining--;
+    if (remaining <= 0) { remaining = 0; clearInterval(timerInterval); running = false; }
+    updateTimerDisplay();
+  }, 1000);
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  running = false;
+  remaining = TOTAL;
+  document.getElementById('startBtn').innerHTML = '<i class="ti ti-player-play"></i> Start';
+  updateTimerDisplay();
+}
+
+function updateTimerDisplay() {
+  const elapsed = TOTAL - remaining;
+  const m = Math.floor(remaining / 60);
+  const s = remaining % 60;
+  const display = document.getElementById('timerDisplay');
+  display.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+  const fill = document.getElementById('timerFill');
+  const pct = (remaining / TOTAL) * 100;
+  fill.style.width = pct + '%';
+  fill.style.background = remaining < 120 ? '#ff6b6b' : remaining < 300 ? '#f59e0b' : 'var(--g4)';
+  display.className = 'timer-digits' + (remaining < 120 ? ' danger' : remaining < 300 ? ' warn' : '');
+  // phase name
+  let ph = 0;
+  for (let i = phaseStarts.length - 1; i >= 0; i--) { if (elapsed >= phaseStarts[i]) { ph = i; break; } }
+  document.getElementById('phaseName').textContent = phaseNames[ph];
+}
+
+// ════════════════════════════════
+// PHASE NAV
+// ════════════════════════════════
+let currentPhase = 0;
+const visited = new Set([0]);
+
+function goPhase(n) {
+  document.querySelectorAll('.phase').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.pnav-item').forEach(b => b.classList.remove('active'));
+  document.getElementById('phase-' + n).classList.add('active');
+  document.getElementById('pnav-' + n).classList.add('active');
+  visited.add(n);
+  visited.forEach(v => { if (v !== n) document.getElementById('pnav-' + v).classList.add('done'); });
+  currentPhase = n;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ════════════════════════════════
+// WONDER FLIP
+// ════════════════════════════════
+function flipWonder(el) { el.classList.toggle('flipped'); }
+
+// ════════════════════════════════
+// SORT ACTIVITY
+// ════════════════════════════════
+let draggedItem = null;
+
+function dragStart(e) { draggedItem = e.target; }
+function allowDrop(e) { e.preventDefault(); e.currentTarget.classList.add('dragover'); }
+
+document.addEventListener('dragend', () => {
+  document.querySelectorAll('.sort-zone').forEach(z => z.classList.remove('dragover'));
+});
+
+function dropSort(e, zone) {
+  e.preventDefault();
+  e.currentTarget.classList.remove('dragover');
+  if (!draggedItem) return;
+  placeChip(draggedItem, zone);
+}
+
+let tapTarget = null;
+function tapSort(el) {
+  if (el.classList.contains('placed-ing') || el.classList.contains('placed-pro')) return;
+  if (tapTarget === el) { tapTarget = null; el.style.outline = ''; return; }
+  tapTarget = el;
+  el.style.outline = '2px solid var(--g3)';
+}
+
+function placeChip(chip, zone) {
+  const correct = chip.dataset.type === zone.replace('zone-', '').split('').join('');
+  const isIng = chip.dataset.type === 'ing';
+  chip.style.outline = '';
+  chip.classList.add(isIng ? 'placed-ing' : 'placed-pro');
+  chip.draggable = false;
+  const zoneEl = document.getElementById('zone-' + (isIng ? 'ing' : 'pro'));
+  if (zone === chip.dataset.type) {
+    zoneEl.appendChild(chip);
+  } else {
+    chip.classList.add('wrong-place');
+    setTimeout(() => { chip.classList.remove('wrong-place', 'placed-ing', 'placed-pro'); chip.draggable = true; }, 600);
+    return;
+  }
+  checkSort();
+}
+
+function checkSort() {
+  const allChips = document.querySelectorAll('.sort-chip');
+  const placed = [...allChips].filter(c => c.classList.contains('placed-ing') || c.classList.contains('placed-pro'));
+  if (placed.length === 5) {
+    document.getElementById('sortResult').textContent = '✅ Perfect! All 5 items sorted correctly. Ingredients go IN, Products come OUT!';
+  }
+}
+
+// ════════════════════════════════
+// EQUATION BUILDER
+// ════════════════════════════════
+let eqSlot = 0;
+const slotAnswers = ['6CO₂','6H₂O','Light','Glucose','6O₂'];
+
+function placePiece(el, val) {
+  if (eqSlot >= 5) return;
+  const slot = document.getElementById('slot-' + eqSlot);
+  if (val === slotAnswers[eqSlot]) {
+    slot.textContent = val;
+    slot.classList.add('filled');
+    el.classList.add('used');
+    eqSlot++;
+    if (eqSlot === 5) document.getElementById('eqResult').textContent = '🎉 Perfect! You built the complete photosynthesis equation!';
+  } else {
+    slot.classList.add('wrong');
+    setTimeout(() => slot.classList.remove('wrong'), 600);
+    document.getElementById('eqResult').textContent = '✗ Not quite — think about what comes at position ' + (eqSlot+1) + '. Try again!';
+  }
+}
+
+function resetEq() {
+  eqSlot = 0;
+  for (let i = 0; i < 5; i++) {
+    const s = document.getElementById('slot-' + i);
+    s.textContent = '?';
+    s.className = 'eq-slot';
+  }
+  document.querySelectorAll('.eq-piece').forEach(p => p.classList.remove('used'));
+  document.getElementById('eqResult').textContent = '';
+}
+
+// ════════════════════════════════
+// SIMULATOR
+// ════════════════════════════════
+const insights = [
+  "🔬 What happens when you set CO₂ to 0? — Plants can't build glucose without carbon!",
+  "💡 Try cranking light to 100% — is it still limited by something else?",
+  "🌡️ Set temperature above 40°C — enzymes start to break down!",
+  "💧 Reduce water to 0 — stomata close, CO₂ can't get in either!",
+  "🏆 Find the combination that maximizes glucose production. What is it?"
+];
+let insightIdx = 0;
+
+function runSim() {
+  const l = +document.getElementById('sl').value;
+  const c = +document.getElementById('sc').value;
+  const w = +document.getElementById('sw').value;
+  const t = +document.getElementById('st').value;
+  document.getElementById('vl').textContent = l + '%';
+  document.getElementById('vc').textContent = c + '%';
+  document.getElementById('vw').textContent = w + '%';
+  document.getElementById('vt').textContent = t + '°C';
+  const tf = t <= 0 ? 0 : t <= 10 ? t/10*0.4 : t <= 35 ? 0.4+(t-10)/25*0.6 : Math.max(0,1-(t-35)/15);
+  const tv = Math.round(tf*100);
+  const mn = Math.min(l,c,w,tv);
+  const rate = mn/100*80;
+  document.getElementById('og').textContent = Math.round(rate);
+  document.getElementById('oo').textContent = Math.round(rate*0.9);
+  const vals = {Light:l,'CO₂':c,Water:w,Temperature:tv};
+  const lk = Object.keys(vals).reduce((a,b) => vals[a] <= vals[b] ? a : b);
+  document.getElementById('olim').textContent = lk;
+  insightIdx = (insightIdx + 1) % insights.length;
+  document.getElementById('simInsight').textContent = insights[insightIdx];
+}
+
+// ════════════════════════════════
+// QUIZ
+// ════════════════════════════════
+const qscores = {};
+
+function qa(btn, qid, ok, fb) {
+  if (qscores[qid] !== undefined) return;
+  qscores[qid] = ok ? 1 : 0;
+  document.getElementById(qid).querySelectorAll('.qopt').forEach(b => b.disabled = true);
+  btn.classList.add(ok ? 'correct' : 'wrong');
+  const fid = 'qf' + qid.replace('qq','');
+  const f = document.getElementById(fid);
+  f.textContent = (ok ? '✓ ' : '✗ ') + fb;
+  f.className = 'qfb show ' + (ok ? 'cfb' : 'wfb');
+  if (Object.keys(qscores).length === 4) {
+    const tot = Object.values(qscores).reduce((a,b)=>a+b,0);
+    const sc = document.getElementById('scoreCard');
+    sc.style.display = 'block';
+    document.getElementById('scoreNum').textContent = tot + '/4';
+    const msgs = ['Keep going — review the concepts!','Good try — almost there!','Strong work!','Brilliant — full marks! 🎉'];
+    document.getElementById('scoreMsg').textContent = msgs[tot - 1] || 'Great effort!';
+  }
+}
+
+// ════════════════════════════════
+// REFLECT
+// ════════════════════════════════
+function checkReflect(inputId, replyId) {
+  const val = document.getElementById(inputId).value.trim();
+  if (val.length < 10) { alert('Write a bit more before submitting!'); return; }
+  const reply = document.getElementById(replyId);
+  reply.style.display = 'block';
+}
+
+// ════════════════════════════════
+// PRINT LESSON PLAN
+// ════════════════════════════════
+function printLesson() {
+  window.print();
+}
+
+// Init
+runSim();
+updateTimerDisplay();
+</script>
+</body>
+</html>
